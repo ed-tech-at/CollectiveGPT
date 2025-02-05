@@ -1,0 +1,17 @@
+
+version: "3"
+
+services:
+
+  nchan:
+    image: "nginx:1.25-alpine"
+    container_name: "nchan"
+    restart: unless-stopped
+    build: .
+    entrypoint: ["nginx", "-g", "daemon off;"]
+
+    ports:
+      - "3001:80"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./nchan-example.conf:/etc/nginx/conf.d/nchan-example.conf:ro"

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  py-gpt-proxy:
+    build: .
+    ports:
+      - "3002:3002"
+    environment:
+      - OPENAI_API_KEY=sk-proj-NOGIT
+      - OPENAI_API_SOURCE=proj-NOGIT
+      - SECRET_KEY=NOGIT
+    restart: unless-stopped
+    volumes:
+      - .:/app

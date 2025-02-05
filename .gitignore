@@ -1,0 +1,7 @@
+*.js.map
+*.css.map
+*/adminer/*
+pws.php
+pws.md
+.vscode/*
+.DS_Store

@@ -1,0 +1,29 @@
+#answers {
+  display: flex;
+}
+#answers #users, #answers #gpt {
+  width: 50%;
+}
+#answers #users .badge, #answers #gpt .badge {
+  cursor: pointer;
+}
+
+.navbar-brand {
+  flex-grow: 1;
+}
+
+.navbar-collapse {
+  text-align: right;
+}
+
+.userReseted {
+  text-decoration: line-through;
+}
+
+.badge-pointer {
+  cursor: pointer;
+}
+
+#gpt-graph {
+  background: black;
+}/*# sourceMappingURL=gpt-admin-css.css.map */
