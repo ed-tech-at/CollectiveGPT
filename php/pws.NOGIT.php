@@ -4,8 +4,9 @@
 $version = 5;
 $rootDir = "";
 
-$db_user = "NOGIT";
-$db_dbname = "NOGIT";
+$db_user = "ed_tech_app";
+$db_dbname = "ed_tech_app";
+$db_dbname_en = "ed_tech_app_en";
 $db_pw = "NOGIT";
 $db_host = "NOGIT";
 
