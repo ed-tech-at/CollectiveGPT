@@ -1,5 +1,6 @@
-(function() {
-  var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, loadGptAnswer, parseAnswersList, parseUsernamesList, processGptData, removeFromAnswerList, selectTemplate, sendGraphToUsers, sortUserAnswerList, startNchanAdmin, userAnswerChartData, usernamesList;
+// Ohne IIFE-Wrapper, damit die Funktionen (loadGptAnswer, startNchanAdmin, parseAnswersList, ...)
+// global sind und von den Inline-Handlern in admin_gpt.php aufgerufen werden koennen.
+var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, loadGptAnswer, parseAnswersList, parseUsernamesList, processGptData, removeFromAnswerList, selectTemplate, sendGraphToUsers, sortUserAnswerList, startNchanAdmin, userAnswerChartData, usernamesList;
 
   usernamesList = [];
 
@@ -618,7 +619,7 @@
     return htmx.process(document.body);
   };
 
-}).call(this);
+// (IIFE-Wrapper entfernt)
 
 
 //# sourceMappingURL=gpt-admin-js.js.map
