@@ -4,7 +4,7 @@ use gpt2024;
 
 setlocale(LC_TIME, 'de_AT.UTF8');
 
-$SHOWerror = 1;
+$SHOWerror = 0;
 if ($SHOWerror) {
   error_reporting(E_ALL);
   ini_set('display_errors', 'on');

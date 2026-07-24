@@ -148,11 +148,9 @@ public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperatu
   $raw = curl_exec($ch);
   if ($raw === false) {
     $err = curl_error($ch);
-    curl_close($ch);
     return json_encode(["error" => "Request failed: " . $err]);
   }
   $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  curl_close($ch);
 
   $response = json_decode($raw, true);
   if (!is_array($response) || !isset($response["choices"])) {
