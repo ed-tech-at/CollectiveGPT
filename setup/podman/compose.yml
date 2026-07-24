@@ -4,62 +4,62 @@ services:
   # Liefert die statischen Dateien der CollectiveGPT-App aus, reicht *.php an
   # PHP-FPM weiter und proxyt /pub_id/, /sub_id/, /nchan_stub_status an nchan.
   # --------------------------------------------------------------------------
-  edtech-nginx:
+  ed_tech_app-nginx:
     image: nginx:alpine
-    container_name: edtech-nginx
+    container_name: ed_tech_app-nginx
     restart: unless-stopped
     depends_on:
-      - edtech-php
+      - ed_tech_app-php
       - nchan
     volumes:
       # App-Docroot (nur lesend fuer Nginx: liefert statische Assets aus)
       - ./CollectiveGPT:/var/www/html:ro
       - ./nginx/00-upgrade-map.conf:/etc/nginx/conf.d/00-upgrade-map.conf:ro
-      - ./nginx/edtech.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/ed_tech_app.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/snippets:/etc/nginx/snippets:ro
     networks:
       - traefik_net
-      - edtech_net
+      - ed_tech_app_net
     labels:
       - traefik.enable=true
 
       # ed-tech.app  HTTP -> HTTPS
-      - traefik.http.routers.edtech-http.rule=Host(`ed-tech.app`)
-      - traefik.http.routers.edtech-http.entrypoints=web
-      - traefik.http.routers.edtech-http.middlewares=redirect-to-https@file
+      - traefik.http.routers.ed_tech_app-http.rule=Host(`ed-tech.app`)
+      - traefik.http.routers.ed_tech_app-http.entrypoints=web
+      - traefik.http.routers.ed_tech_app-http.middlewares=redirect-to-https@file
 
       # ed-tech.app  HTTPS / WSS
-      - traefik.http.routers.edtech-https.rule=Host(`ed-tech.app`)
-      - traefik.http.routers.edtech-https.entrypoints=websecure
-      - traefik.http.routers.edtech-https.tls=true
-      - traefik.http.routers.edtech-https.tls.certresolver=myresolver
+      - traefik.http.routers.ed_tech_app-https.rule=Host(`ed-tech.app`)
+      - traefik.http.routers.ed_tech_app-https.entrypoints=websecure
+      - traefik.http.routers.ed_tech_app-https.tls=true
+      - traefik.http.routers.ed_tech_app-https.tls.certresolver=myresolver
 
-      - traefik.http.services.edtech.loadbalancer.server.port=80
+      - traefik.http.services.ed_tech_app.loadbalancer.server.port=80
       - traefik.docker.network=traefik_net
 
   # --------------------------------------------------------------------------
   # ed-tech.app -- PHP-FPM (CollectiveGPT)
   # Der komplette Repo-Baum ist Docroot (index.php liegt in der Wurzel).
   # --------------------------------------------------------------------------
-  edtech-php:
+  ed_tech_app-php:
     build:
       context: .
       dockerfile: Dockerfile.php
-    image: edtech-php:8.5
-    container_name: edtech-php
+    image: ed_tech_app-php:8.5
+    container_name: ed_tech_app-php
     restart: unless-stopped
     volumes:
       - ./CollectiveGPT:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
     networks:
-      - edtech_net
+      - ed_tech_app_net
       # MariaDB: die DB-Verbindung (PDO) laeuft ueber dieses externe Netz.
       # $db_host in CollectiveGPT/php/pws.php = Name des MariaDB-Containers.
       - mariadb_net
 
   # --------------------------------------------------------------------------
   # nchan -- WebSocket-/Pub-Sub-Server (nur intern, kein eigener Traefik-Host)
-  # Erreichbar same-origin ueber edtech-nginx unter /pub_id/ und /sub_id/.
+  # Erreichbar same-origin ueber ed_tech_app-nginx unter /pub_id/ und /sub_id/.
   # --------------------------------------------------------------------------
   nchan:
     build:
@@ -73,7 +73,7 @@ services:
       - ./nchan/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nchan/nchan.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
-      - edtech_net
+      - ed_tech_app_net
 
 networks:
   # Von Traefik bereitgestelltes externes Netz (muss existieren).
@@ -85,5 +85,5 @@ networks:
     external: true
 
   # Internes Netz: nginx <-> php <-> nchan.
-  edtech_net:
+  ed_tech_app_net:
     driver: bridge
