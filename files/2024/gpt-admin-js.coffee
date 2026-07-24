@@ -22,10 +22,13 @@ processGptData = (gptData, prompt_id, template_id) ->
   
   sortedData = []   
   # Extrahiere und sortiere die Daten basierend auf p-Werten
-  for i in [1..10]
+  # (nur ueber die tatsaechlich gelieferten Ergebnisse r1..rN, N = n)
+  i = 1
+  while gptData["r#{i}"]?
     r = gptData["r#{i}"]
     p = gptData["p#{i}"]
     sortedData.push({r: r.trim(), p: parseFloat(p)})
+    i++
   
   sortedData.sort (a, b) -> b.p - a.p
   sigmoid = (x) -> 1 / (1 + Math.exp(-x))

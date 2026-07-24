@@ -30,7 +30,7 @@ var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, l
     sortedData = [];
 
 // Extrahiere und sortiere die Daten basierend auf p-Werten
-    for (i = j = 1; j <= 10; i = ++j) {
+    for (i = 1; gptData[`r${i}`] != null; i++) {
       r = gptData[`r${i}`];
       p = gptData[`p${i}`];
       sortedData.push({
