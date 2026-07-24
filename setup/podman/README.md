@@ -14,7 +14,7 @@ Internet ──► Traefik ──► edtech-nginx ─┬─► edtech-php   (PHP
 - **edtech-nginx** — einziger nach außen (über Traefik) erreichbarer Dienst.
   Liefert statische Assets, reicht `*.php` an PHP-FPM und proxyt `/pub_id/`,
   `/sub_id/`, `/nchan_stub_status` an nchan (same-origin).
-- **edtech-php** — PHP 8.3-FPM, Docroot ist der komplette Repo-Baum
+- **edtech-php** — PHP 8.5-FPM, Docroot ist der komplette Repo-Baum
   (`index.php` in der Wurzel). Hängt zusätzlich am externen `mariadb_net`.
 - **nchan** — nginx + nchan-Modul, nur intern. PHP publiziert serverseitig
   über `/pub_id/`, Browser abonnieren per WebSocket über `/sub_id/`.
