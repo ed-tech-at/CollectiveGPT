@@ -21,11 +21,11 @@ Internet ──► Traefik ──► edtech-nginx ─┬─► edtech-php   (PHP
 
 ## Zielverzeichnis auf dem Server
 
-Den **Inhalt** dieses Ordners (`setup/podman/`) nach `/podman/edtech-app/`
+Den **Inhalt** dieses Ordners (`setup/podman/`) nach `/podman/ed-tech-app/`
 kopieren, das Repo selbst liegt darunter unter `CollectiveGPT/`:
 
 ```
-/podman/edtech-app/
+/podman/ed-tech-app/
 ├── compose.yml
 ├── Dockerfile.php
 ├── php.ini
@@ -44,11 +44,11 @@ kopieren, das Repo selbst liegt darunter unter `CollectiveGPT/`:
 Beispiel:
 
 ```bash
-mkdir -p /podman/edtech-app
-# Inhalt von setup/podman/ nach /podman/edtech-app/ kopieren
-cp -a setup/podman/. /podman/edtech-app/
+mkdir -p /podman/ed-tech-app
+# Inhalt von setup/podman/ nach /podman/ed-tech-app/ kopieren
+cp -a setup/podman/. /podman/ed-tech-app/
 # Repo daneben klonen
-cd /podman/edtech-app
+cd /podman/ed-tech-app
 git clone <REPO-URL> CollectiveGPT
 ```
 
@@ -86,7 +86,7 @@ Repo angelegt werden:
    die Repo-Wurzel geschrieben — der PHP-Prozess (Alpine: UID/GID 82) braucht
    dort Schreibrechte:
    ```bash
-   podman unshare chown -R 82:82 /podman/edtech-app/CollectiveGPT
+   podman unshare chown -R 82:82 /podman/ed-tech-app/CollectiveGPT
    ```
 
 ## MariaDB: Datenbank und Benutzer anlegen
@@ -120,7 +120,7 @@ SQL
 
 ```bash
 podman exec -i mariadb mariadb -uroot -pROOTPW NOGIT \
-  < /podman/edtech-app/CollectiveGPT/setup/DBSETUP.sql
+  < /podman/ed-tech-app/CollectiveGPT/setup/DBSETUP.sql
 ```
 
 **3. Verbindung prüfen** (als App-Benutzer):
@@ -144,7 +144,7 @@ $db_pw     = "NOGIT";
 ## Starten
 
 ```bash
-cd /podman/edtech-app
+cd /podman/ed-tech-app
 podman compose up -d --build
 podman compose exec edtech-nginx nginx -t
 ```
