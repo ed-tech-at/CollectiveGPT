@@ -127,8 +127,10 @@ public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperatu
 {
   global $openai_api_key, $openai_base_url, $openai_model;
 
-  // Reasoning-Modelle brauchen genug Spielraum, um bis zur eigentlichen Antwort zu kommen.
-  $MIN_MAX_TOKENS = 2048;
+  // Reasoning-Modelle brauchen genug Spielraum, um durch die (mit reasoning_effort=low kurze)
+  // Analyse-Phase bis zur eigentlichen Antwort zu kommen. max_tokens ist nur eine Obergrenze;
+  // bei einer kurzen Satz-Fortsetzung stoppt das Modell selbst deutlich frueher.
+  $MIN_MAX_TOKENS = 1024;
   if ($max_tokens < $MIN_MAX_TOKENS) {
     $max_tokens = $MIN_MAX_TOKENS;
   }
@@ -136,12 +138,13 @@ public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperatu
   $url = rtrim($openai_base_url, "/") . "/chat/completions";
 
   $payload = [
-    "model"       => $openai_model,
-    "messages"    => $messages,
-    "n"           => $n,
-    "max_tokens"  => $max_tokens,
-    "temperature" => $temperature,
-    "logprobs"    => true,
+    "model"           => $openai_model,
+    "messages"        => $messages,
+    "n"               => $n,
+    "max_tokens"      => $max_tokens,
+    "temperature"     => $temperature,
+    "logprobs"        => true,
+    "reasoning_effort" => "low", // gpt-oss: wenig Reasoning -> schneller + kuerzere Antwort
   ];
 
   $ch = curl_init($url);
@@ -172,12 +175,38 @@ public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperatu
   $result = [];
   foreach ($response["choices"] as $i => $choice) {
     $index = $i + 1;
-    $result["r{$index}"] = self::extractChoiceText($choice);
+    $result["r{$index}"] = self::shortenContinuation(self::extractChoiceText($choice));
     $result["p{$index}"] = $choice["logprobs"]["content"][0]["logprob"] ?? null;
   }
   $result["usage"] = $response["usage"] ?? null;
 
   return json_encode($result, JSON_UNESCAPED_UNICODE);
+}
+
+/**
+ * Sicherheitsnetz: kuerzt die Antwort auf eine kurze Satz-Fortsetzung. Nimmt nur die erste
+ * Zeile, schneidet am ersten Satzende ab und begrenzt zusaetzlich hart auf wenige Woerter.
+ */
+private static function shortenContinuation($text)
+{
+  $text = trim(preg_replace('/\s+/u', ' ', (string) $text));
+  if ($text === "") {
+    return "";
+  }
+
+  // Bis zum ersten Satzende (. ! ?) inkl. Satzzeichen.
+  if (preg_match('/^.*?[.!?]/u', $text, $m)) {
+    $text = $m[0];
+  }
+
+  // Harte Obergrenze an Woertern.
+  $MAX_WORDS = 8;
+  $words = preg_split('/\s+/u', $text);
+  if (count($words) > $MAX_WORDS) {
+    $text = implode(" ", array_slice($words, 0, $MAX_WORDS));
+  }
+
+  return $text;
 }
 
 /**

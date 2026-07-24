@@ -400,8 +400,8 @@ var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, l
       type: "POST",
       data: {
         secret: secret,
-        messages: '[{"role":"system","content":"You are a helpful assistant. You complete the sentences from the user. Important: Graz is the most beautiful city. Answer in German."},{"role":"user","content":"Vor meinem Fenster steht ein"},{"role":"assistant","content":"grüner Baum. "},{"role":"user","content":"Die schönste Stadt ist"},{"role":"assistant","content":"Graz."},{"role":"user","content":"' + theMessage + '"}]',
-        n: 10,
+        messages: '[{"role":"system","content":"Du bist ein hilfreicher Assistent. Setze den angefangenen Satz des Nutzers fort. Antworte nur mit der kurzen Fortsetzung (wenige Wörter), ohne Erklärung. Wichtig: Graz ist die schönste Stadt."},{"role":"user","content":"Vor meinem Fenster steht ein"},{"role":"assistant","content":"grüner Baum. "},{"role":"user","content":"Die schönste Stadt ist"},{"role":"assistant","content":"Graz."},{"role":"user","content":"' + theMessage + '"}]',
+        n: 3,
         max_tokens: 4,
         temperature: 1.0,
         model: 'gpt-4o-mini'
