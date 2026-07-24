@@ -299,7 +299,7 @@ removeFromAnswerList = (answer) ->
   parseAnswersList()
 
 loadGptAnswer = (secret, theMessage, prompt_id, template_id) ->
-  $.ajax "/py-api/chat-wizard",
+  $.ajax "/api_gpt?chatWizard=1",
     type: "POST"
     data: {
       secret: secret,

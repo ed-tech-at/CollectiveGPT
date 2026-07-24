@@ -395,7 +395,7 @@
   };
 
   loadGptAnswer = function(secret, theMessage, prompt_id, template_id) {
-    return $.ajax("/py-api/chat-wizard", {
+    return $.ajax("/api_gpt?chatWizard=1", {
       type: "POST",
       data: {
         secret: secret,

@@ -7,6 +7,29 @@ class api_gpt {
 
   public static function doApi () {
 
+  if (isset($_GET["chatWizard"])) {
+    global $py_api;
+
+    header("Content-Type: application/json; charset=utf-8");
+
+    if (($_POST["secret"] ?? "") !== $py_api) {
+      http_response_code(401);
+      return json_encode(["error" => "Unauthorized"]);
+    }
+
+    $messages = json_decode($_POST["messages"] ?? "null", true);
+    if (!is_array($messages)) {
+      http_response_code(400);
+      return json_encode(["error" => "Invalid JSON format"]);
+    }
+
+    $n           = (int) ($_POST["n"] ?? 1);
+    $max_tokens  = (int) ($_POST["max_tokens"] ?? 4);
+    $temperature = (float) ($_POST["temperature"] ?? 1.0);
+
+    return gpt_functions::chatWizard($messages, $n, $max_tokens, $temperature);
+  }
+
   if (isset($_GET["getText"])) {
     $optionen = gpt_functions::getOptionen();
 

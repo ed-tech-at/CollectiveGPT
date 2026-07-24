@@ -103,7 +103,7 @@
                 };
 
                 $.ajax({
-                    url: 'https://ed-tech.app/py-api/chat-wizard',
+                    url: '/api_gpt?chatWizard=1',
                     type: 'POST',
                     data: data,
                     success: function(response) {
