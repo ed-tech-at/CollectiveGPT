@@ -20,14 +20,14 @@ startNchan(2);
   public static function intro() {
 
     if (isset($_SESSION["username"])) {
-      return "<p>Collective GPT (2024) User: {$_SESSION["username"]} 
+      return "<p>Collective GPT &nbsp;&nbsp; User: {$_SESSION["username"]} 
       <span class='btn getin edit' hx-get='./api_gpt?resetUsername=1' hx-target='#main' ><i class='fas fa-pencil-alt'></i></span> <span class='btn disable edit' id='glasses' onclick='doAnimate=0;$(\"#glasses\").hide()' ><i class='fas fa-low-vision'></i></span></p>
       <script>
       session_id = '" . session_id() ."';
       </script>
       ";
     } else {
-      return "<p>Collective GPT (2024)</p>";
+      return "<p>Collective GPT</p>";
     }
     
   }
@@ -63,9 +63,16 @@ startNchan(2);
     </div>
     " . $chart;
     } else {
-      return "<div id='text'>
-    <h2><i>Text wird vorbereitet...</i></h2>
-    </div>";
+
+      if ($optionen->lang == "en") {
+        return "<div id='text'>
+                <h2><i>Text is being prepared...</i></h2>
+                </div>";
+      } else {
+        return "<div id='text'>
+                <h2><i>Text wird vorbereitet...</i></h2>
+                </div>";
+      }    
 
     }
 
@@ -79,17 +86,28 @@ startNchan(2);
   
   public static function userName($reason = 1) {
 
+    $optionen = gpt_functions::getOptionen();
+    $change = "Username muss geändert werden:";
+    $datenschutz = "Sie stimmen zu, dass die eingegebenen Daten zu wissenschaftlichen Zwecken gemäß den <a href='/datenschutz/' target='_blank'>Datenschutzinformationen</a> ausgewertet und verarbeitet werden dürfen.";
+
+    if ($optionen->lang == "en") {
+      $change = "Username must be changed:";
+      $datenschutz = "You agree that the data entered may be evaluated and processed for scientific purposes in accordance with the <a href='/datenschutz/' target='_blank'>privacy policy</a>.";
+    }
+
     $h2 = "<h2>Username:</h2>";
     if ($reason == 2) {
-      $h2 = "<h2>Username muss geändert werden:</h2>";
+      $h2 = "<h2>$change</h2>";
     }
+
+
     return fe::intro() . "$h2
     <form hx-post='./api_gpt?setSessionUsername=1'  hx-target='#main' >
     <div id='inputs'>
         <input name='username' value='' required=1>
         <button class='disable btn' id='getin' ><i class='fa fa-sign-in-alt' aria-hidden='true'></i></button>
         </div>
-        <p><label> <input type='checkbox' class='checkbox' id='agb' required=1 onchange='getInCheckbox(this)' value='1'>Sie stimmen zu, dass die eingegebenen Daten zu wissenschaftlichen Zwecken gemäß den <a href='/datenschutz/' target='_blank'>Datenschutzinformationen</a> ausgewertet und verarbeitet werden dürfen.</label></p>
+        <p><label> <input type='checkbox' class='checkbox' id='agb' required=1 onchange='getInCheckbox(this)' value='1'>$datenschutz</label></p>
         </form>
         ";
 

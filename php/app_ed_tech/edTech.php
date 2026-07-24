@@ -80,7 +80,7 @@ public static function getHtmlFooter()
   
   $a = "
 <footer>
-<a href='/impressum/'>Impressum</a>
+<a href='/impressum/'>Impressum / Imprint</a>
 <a href='/datenschutz/'>Datenschutz</a>
 </footer>
 </body>
@@ -96,12 +96,54 @@ public static function getHtmlDatenschutz() {
 $a .= '
   <main id="main" class="special">
 <b>ed-tech.app</b> <a href="/" class="btn btn-white">Home</a>
-
+<br>
+This website is created in Austria, the following Austrian laws apply:
 <h2 class="wp-block-heading">Datenschutz</h2>
 
 
-<h5>Auswertung zu wissenschaftlichen Zwecken</h5>
+
+<h4 class="wp-block-heading">1. Grundsatz</h4>
+
+
+
+<p>Der Schutz Ihrer Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschließlich auf Grundlage der gesetzlichen Bestimmungen (<a href="https://www.dsb.gv.at/recht-entscheidungen/gesetze-in-oesterreich.html">DSGVO, TKG</a>). In diesen Datenschutzinformationen informieren wir Sie über die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website.</p>
+
+
+
+<h4 class="wp-block-heading">2. Zweck und Rechtsgrundlage der Verarbeitung</h4>
+
+
+
+<p>Beim Besuch unserer Website wird Ihre IP-Adresse, Beginn und Ende der Sitzung für die Dauer dieser Sitzung erfasst. Dies ist aus technischem Grund erforderlich und stellt damit ein berechtigtes Interesse i.S.v. Art 6 Abs 1 lit f DSGVO dar. Soweit im Folgenden nichts anderes geregelt wird, werden diese Daten von uns nicht weiterverarbeitet.</p>
+
+<h5>2.1 Auswertung zu wissenschaftlichen Zwecken</h5>
 Die im Rahmen der Nutzung unserer Website erhobenen Daten, wie der frei gewählte Benutzername und die eingegebenen Antworten, werden pseudonymisiert zu wissenschaftlichen Zwecken ausgewertet. Diese Auswertungen dienen der Forschung und Weiterentwicklung von Bildungs- und Technologieangeboten, insbesondere im Bereich der Bildungsinformatik, Künstlichen Intelligenz und maschinellen Lernens. Die Datenverarbeitung erfolgt unter strikter Einhaltung der geltenden Datenschutzgesetze und ausschließlich zu dem Zweck, wissenschaftliche Erkenntnisse zu gewinnen, die zur Verbesserung und Weiterentwicklung unseres Angebots beitragen können.
+
+<h4 class="wp-block-heading">3. Ihre Rechte</h4>
+
+
+
+<p>Die/Der BenutzerIn verfügt über das Recht auf Auskunft, Löschung, Berichtigung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Datenverarbeitung. Es besteht ferner ein Beschwerderecht an die Österreichische Datenschutzbehörde, Wickenburggasse 8, 1080 Wien (<script type=\'text/javascript\'>
+a=\'dsb\'; b=\'dsb.gv.at\'
+        document.write(\'<A hre\'+\'f="mai\'+\'lto:\'+a+\'@\'+b+\'">\');
+        document.write(a+\'@\'+b+\'<\/a>\');
+        </script>).</p>
+
+
+
+<p>Verantwortlicher im Sinne des Artikel 4 Z 7 DS-GVO ist Benedikt Brünner, MEd BEd. Wenden Sie sich bei datenschutzrechtlichen Anliegen oder der Ausübung Ihrer Betroffenenrechte bitte an <script type=\'text/javascript\'>
+a=\'webinfo\'; b=\'bruenner.at\'
+        document.write(\'<A hre\'+\'f="mai\'+\'lto:\'+a+\'@\'+b+\'">\');
+        document.write(a+\'@\'+b+\'<\/a>\');
+        </script> .</p>
+
+
+
+<p>Datenschutzhinweis mit Unterstützung der <a href="https://www.wko.at/internetrecht/datenschutzerklaerung-checkliste-infopflichten-dsgvo-tkg-we">WKO</a> erstellt.</p>
+
+
+</div>
+</div>
 
 </main>
 
@@ -120,6 +162,8 @@ public static function getHtmlImpressum() {
   <main id="main" class="special">
 
   <b>ed-tech.app</b> <a href="/" class="btn btn-white">Home</a>
+<br>
+  This website is created in Austria, the following Austrian laws apply:
   <h2 class="wp-block-heading">Impressum</h2>
   
   
@@ -127,7 +171,32 @@ public static function getHtmlImpressum() {
   <h4 class="wp-block-heading">Medieninhaber, Eigentümer und Herausgeber der Webseite</h4>
   
   
-    
+  
+  <p>Benedikt Brünner, MEd BEd</p>
+  
+  
+  
+  <p>Graz, Österreich</p>
+  
+  
+  
+  <p>E-Mail: <span id="eeb-3907-784177"></span><script type="text/javascript">(function(){var ml="noF3rb%-A.miD0f4u2skdltCeEhac",mi="63GK6A=J4H>63<6AA:K;EF16385H0HD;CF6?=54@H00H49KF6AA6A=LEKBB63<6AA:K;E7E;0C6AA63I5H0HD;CF6?=54@H00H49KF63G6A2K63I",o="";for(var j=0,l=mi.length;j<l;j++){o+=ml.charAt(mi.charCodeAt(j)-48);}document.getElementById("eeb-3907-784177").innerHTML = decodeURIComponent(o);}());</script><noscript>*protected email*</noscript></p>
+  
+  
+  
+  <h4 class="wp-block-heading">Haftung für Links</h4>
+  
+  
+  
+  <p>Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.</p>
+  
+  
+  
+  <h4 class="wp-block-heading">Datenschutz</h4>
+  <p>Link zur <a href="/datenschutz/" target="_blank" rel="noreferrer noopener">Datenschutzinformation</a></p>
+  
+    </div>
+  </div>
   </main>
   
   
@@ -136,6 +205,51 @@ public static function getHtmlImpressum() {
   $a .= edTech::getHtmlFooter();
   return $a;
 }
+
+
+public static function getHtmlImpressumBaumechanik2() {
+  $a = edTech::getHtmlHeader("Impressum");
+  $a .= '
+
+  <main id="main" class="special">
+
+  <b>Baumechanik 2 - Chatbot für die zweite Hausübung</b> <a href="https://baumechanik2.ed-tech.app/" class="btn btn-white">zum Chatbot</a>
+<br>
+  
+  <h2 class="wp-block-heading">Impressum</h2>
+  
+  <div><h4>Für den Inhalt verantwortlich</h4> 
+
+  <p>Ed-Tech Research Community Graz<br>
+    Leiter der Forschungsgruppe: Martin Ebner<br>Tel.: <a href="http://00433168738577">+43 316 873-8577</a></p> 
+
+  <h4>Herausgeber:in</h4> 
+
+  <p>Technische Universität Graz<br>Rechbauerstrasse 12<br>8010 Graz<br>Österreich</p> 
+
+  <p>Tel.: <a href="tel:00433168730">+43 316 873-0</a></p> 
+
+  <h4>Technische Umsetzung, Webentwicklung und Webdesign</h4> 
+
+  <p>TU Graz Lehr- und Lerntechnologien & Institut für Baumechanik<br>Ass.Prof. Dipl.-Ing. Dr.techn. Michael Gfrerer, BSc<br><br> <b>Studierendenteam:</b>  <br>Elisabeth Eberl (Master Student)<br>Benedikt Brünner (PhD Student)</p> 
+
+  <h4>Aufsichtsbehörde</h4> 
+
+  <p>Bundesministerium für Bildung, Wissenschaft und Forschung<br>Web: <a href="https://www.bmbwf.gv.at/" target="_blank" rel="noreferrer noopener">https://www.bmbwf.gv.at</a></p>
+
+  
+  
+  <br>
+  
+  Weitere Informationen finden Sie auf <a href="https://bildungsinformatik.at/impressum/">https://bildungsinformatik.at/impressum/</a>.</div>
+  
+  ';
+
+  // $a .= edTech::getHtmlFooter();
+  return $a;
+}
+
+
 public static function getChatbotPaused() {
   $a = edTech::getHtmlHeader("EdTech Chatbot");
   $a .= "
@@ -147,10 +261,24 @@ public static function getChatbotPaused() {
   <div class='container clearfix'>
         <img src='/files/2024/dall-e-chatbot.webp' alt='Chatbot Illustration'>
         <h1>Unser EdTech Chatbot ist momentan nicht aktiv</h1>
+        <p>Vielen Dank für Ihr Interesse an unserem Bildungs-Chatbot. Leider ist der Chatbot gerade nicht verfügbar, wir freuen uns auf den nächsten Workshop mit Ihnen.</p>
+        <p>In der Zwischenzeit dürfen wir Sie auf unseren aktuellen Blog-Post unter <a href='https://education.garden/2024/prompting-techniken/'>education.garden</a> zum Thema <b>Prompting Techniken</b> aufmerksam machen.</p>
         
     </div>
 
+    <div class='container clearfix'>
+    <h2>Prompt Engineering</h2>
+    <img src='/files/2024/dall-e-prompt-engineering.webp' alt='Prompt Engineering Illustration'>
+<p>Prompt Engineering spielt eine entscheidende Rolle bei der Nutzung von Künstlicher Intelligenz (KI), insbesondere bei Sprachmodellen wie GPT-4. Durch das gezielte Formulieren von Eingabeaufforderungen (Prompts) kann die Qualität und Genauigkeit der generierten Antworten erheblich verbessert werden. Ein gut konzipierter Prompt ermöglicht es der KI, relevante Informationen präzise und kontextbezogen bereitzustellen, was die Effizienz und Effektivität von Anwendungen in verschiedensten Bereichen steigert. Zudem hilft Prompt Engineering dabei, unerwünschte oder fehlerhafte Ergebnisse zu minimieren, indem es klare und spezifische Anweisungen gibt, was insbesondere in sensiblen Anwendungen von großer Bedeutung ist.</p>
+
+</div>
+
+    <div class='container clearfix'>
+    <h2>Wie KI die Bildungswelt verändert</h2>
+    <img src='/files/2024/dall-e-ai-education.webp' class='large' alt='AI Tranformation of Education Illustration'>
+<p>Künstliche Intelligenz revolutioniert die Bildungswelt auf vielfältige Weise. Durch den Einsatz von KI-gestützten Lernplattformen können Lehrinhalte personalisiert und an die individuellen Bedürfnisse der Lernenden angepasst werden, was zu einer effektiveren und engagierteren Lernerfahrung führt. KI-basierte Systeme können zudem administrative Aufgaben automatisieren, wie z.B. die Bewertung von Prüfungen oder die Organisation von Lehrplänen, was Lehrkräften mehr Zeit für die direkte Interaktion mit Schülern und Studenten verschafft. Darüber hinaus ermöglicht KI den Zugang zu Bildung für Menschen in abgelegenen oder benachteiligten Regionen, indem sie virtuelle Klassenzimmer und Online-Kurse anbietet, die von überall auf der Welt erreichbar sind.</p>
     
+</div>
 
   </main>
 ";
@@ -167,6 +295,13 @@ public static function specialPages() {
         edTech::throw303SeeOther("/impressum/");
       }
       echo edTech::getHtmlImpressum();
+      die();
+    }
+    if ($path[0] == "impressum-baumechanik2") {
+      if (count($path) > 1) {
+        edTech::throw303SeeOther("/impressum-baumechanik2/");
+      }
+      echo edTech::getHtmlImpressumBaumechanik2();
       die();
     }
     if ($path[0] == "datenschutz") {

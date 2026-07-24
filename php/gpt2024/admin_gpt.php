@@ -38,6 +38,23 @@ $optionen = gpt_functions::getOptionen();
 
 if (isset($_GET["template"])) {
 
+  if (isset($_GET["lang"]) && $_GET["lang"] == "de") {
+    $optionen->lang = "de";
+  }
+  if (isset($_GET["lang"]) && $_GET["lang"] == "en") {
+    $optionen->lang = "en";
+  }
+  gpt_functions::setOptionen($optionen);
+
+
+  echo "Select Language: Aktuell: <b>" . $optionen->lang . "</b>
+  <a href='?template=1&lang=de' class=\"btn btn-dark\">Deutsch</a>
+  <a href='?template=1&lang=en' class=\"btn btn-dark\">English</a>
+  
+  
+  <br> ";
+  
+
   echo template_prompt::getEditInterface(null);
 
   $all_templates = template_prompt::getAllPrompts(true);
@@ -201,7 +218,7 @@ public static function getHtmlHeaderAdmin($title)
 
     <script src='{$rootDir}/files/jquery_3.7.1.min.js' ></script>
     <script src='{$rootDir}/files/2024/bootstrap.bundle.min.js' ></script>
-    
+    <script src='{$rootDir}/files/moment.min.js' ></script>
     <script src='{$rootDir}/files/htmx_2.0.1.min.js' ></script>
 
         <script src='{$rootDir}/files/NchanSubscriber.js' ></script>
