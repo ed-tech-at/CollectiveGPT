@@ -6,7 +6,7 @@ Dieser Stack betreibt **ed-tech.app** (CollectiveGPT, PHP) und einen
 ## Architektur
 
 ```
-Internet ──► Traefik ──► edtech-nginx ─┬─► edtech-php   (PHP-FPM, CollectiveGPT)
+Internet ──► Traefik ──► edtech-nginx ─┬─► ed_tech_app-php   (PHP-FPM, CollectiveGPT)
    (443)                   (Host:        └─► nchan        (Pub/Sub, WebSocket)
                         ed-tech.app)
 ```
@@ -14,7 +14,7 @@ Internet ──► Traefik ──► edtech-nginx ─┬─► edtech-php   (PHP
 - **edtech-nginx** — einziger nach außen (über Traefik) erreichbarer Dienst.
   Liefert statische Assets, reicht `*.php` an PHP-FPM und proxyt `/pub_id/`,
   `/sub_id/`, `/nchan_stub_status` an nchan (same-origin).
-- **edtech-php** — PHP 8.5-FPM, Docroot ist der komplette Repo-Baum
+- **ed_tech_app-php** — PHP 8.5-FPM, Docroot ist der komplette Repo-Baum
   (`index.php` in der Wurzel). Hängt zusätzlich am externen `mariadb_net`.
 - **nchan** — nginx + nchan-Modul, nur intern. PHP publiziert serverseitig
   über `/pub_id/`, Browser abonnieren per WebSocket über `/sub_id/`.
@@ -113,7 +113,7 @@ SQL
 ```
 
 > `'NOGIT'@'%'` erlaubt den Zugriff aus dem Container-Netz. Der Wert für den
-> Host `@'%'` (statt `@'localhost'`) ist nötig, weil `edtech-php` über das
+> Host `@'%'` (statt `@'localhost'`) ist nötig, weil `ed_tech_app-php` über das
 > Netzwerk (`$db_host` = Container-Name) verbindet, nicht über einen Socket.
 
 **2. Schema einspielen** (`setup/DBSETUP.sql` aus dem geklonten Repo):
@@ -162,7 +162,7 @@ systemctl enable --now podman-edtech.service
 - **nchan-Hairpin:** PHP ruft `https://ed-tech.app/pub_id/` auf (serverseitig).
   Der Aufruf geht über die öffentliche Adresse zurück auf den Server. Das
   funktioniert, sofern der Container `ed-tech.app` auflösen kann. Optional
-  direkter (spart den Umweg) — im Service `edtech-php` ergänzen:
+  direkter (spart den Umweg) — im Service `ed_tech_app-php` ergänzen:
   ```yaml
   extra_hosts:
     - "ed-tech.app:HOST_GATEWAY"

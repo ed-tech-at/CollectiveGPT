@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     depends_on:
       - ed_tech_app-php
-      - nchan
+      - ed_tech_app-nchan
     volumes:
       # App-Docroot (nur lesend fuer Nginx: liefert statische Assets aus)
       - ./CollectiveGPT:/var/www/html:ro
@@ -61,12 +61,12 @@ services:
   # nchan -- WebSocket-/Pub-Sub-Server (nur intern, kein eigener Traefik-Host)
   # Erreichbar same-origin ueber ed_tech_app-nginx unter /pub_id/ und /sub_id/.
   # --------------------------------------------------------------------------
-  nchan:
+  ed_tech_app-nchan:
     build:
       context: ./nchan
       dockerfile: Dockerfile
     image: local/nchan:1.3.8-alpine
-    container_name: nchan
+    container_name: ed_tech_app-nchan
     restart: unless-stopped
     entrypoint: ["nginx", "-g", "daemon off;"]
     volumes:
