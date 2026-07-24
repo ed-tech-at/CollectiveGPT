@@ -117,10 +117,21 @@ public static function secureCharForMysql($string)
  *
  * Rückgabe (JSON-String) im gleichen Format wie zuvor, damit processGptData() unverändert
  * funktioniert: { "r1": ..., "p1": ..., "r2": ..., "p2": ..., "usage": {...} }
+ *
+ * Hinweis: gpt-oss ist ein Reasoning-Modell (Harmony-Format). Es erzeugt zuerst interne
+ * "analysis"-Tokens und erst danach die sichtbare Antwort im "final"-Kanal. Ein sehr kleines
+ * max_tokens (z.B. 4) wird komplett vom Reasoning verbraucht -> content bleibt leer. Deshalb
+ * ziehen wir max_tokens auf eine Untergrenze hoch und lesen als Fallback den Reasoning-Kanal.
  */
 public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperature = 1.0)
 {
   global $openai_api_key, $openai_base_url, $openai_model;
+
+  // Reasoning-Modelle brauchen genug Spielraum, um bis zur eigentlichen Antwort zu kommen.
+  $MIN_MAX_TOKENS = 2048;
+  if ($max_tokens < $MIN_MAX_TOKENS) {
+    $max_tokens = $MIN_MAX_TOKENS;
+  }
 
   $url = rtrim($openai_base_url, "/") . "/chat/completions";
 
@@ -137,7 +148,7 @@ public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperatu
   curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT        => 60,
+    CURLOPT_TIMEOUT        => 300,
     CURLOPT_HTTPHEADER     => [
       "Content-Type: application/json",
       "Authorization: Bearer " . $openai_api_key,
@@ -161,11 +172,42 @@ public static function chatWizard($messages, $n = 1, $max_tokens = 4, $temperatu
   $result = [];
   foreach ($response["choices"] as $i => $choice) {
     $index = $i + 1;
-    $result["r{$index}"] = $choice["message"]["content"] ?? "";
+    $result["r{$index}"] = self::extractChoiceText($choice);
     $result["p{$index}"] = $choice["logprobs"]["content"][0]["logprob"] ?? null;
   }
   $result["usage"] = $response["usage"] ?? null;
 
   return json_encode($result, JSON_UNESCAPED_UNICODE);
+}
+
+/**
+ * Holt den Antworttext aus einer OpenAI-Choice. Deckt neben dem Standardfeld message.content
+ * auch Reasoning-Modelle (gpt-oss) ab, die den sichtbaren Text ggf. leer lassen und den Inhalt
+ * unter reasoning_content / reasoning bzw. content als Array-Parts liefern.
+ */
+private static function extractChoiceText($choice)
+{
+  $msg = $choice["message"] ?? [];
+
+  $content = $msg["content"] ?? "";
+  // Manche Server liefern content als Array von Parts ([{type:text,text:...}, ...]).
+  if (is_array($content)) {
+    $parts = [];
+    foreach ($content as $part) {
+      if (is_string($part)) {
+        $parts[] = $part;
+      } elseif (isset($part["text"])) {
+        $parts[] = $part["text"];
+      }
+    }
+    $content = implode("", $parts);
+  }
+
+  if (trim((string) $content) !== "") {
+    return $content;
+  }
+
+  // Fallback: Reasoning-Kanal (vLLM: reasoning_content, andere: reasoning).
+  return $msg["reasoning_content"] ?? $msg["reasoning"] ?? "";
 }
 }
