@@ -83,6 +83,9 @@ class api_gpt {
     if ($_GET["class"] == "workshops") {
       return workshops::handleApi();
     }
+    if ($_GET["class"] == "workshop_templates") {
+      return workshop_templates::handleApi();
+    }
     if ($_GET["class"] == "usernames") {
       return usernames::handleApi();
     }

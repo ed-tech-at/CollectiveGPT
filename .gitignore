@@ -1,7 +1,10 @@
 *.js.map
 *.css.map
 */adminer/*
-pws.php
-pws.md
+pws.*
 .vscode/*
 .DS_Store
+
+# Laufzeit-Zustand, legt PHP selbst an (gpt_functions::getOptionen / getChartConfig)
+/optionen.json
+/chart-config.json

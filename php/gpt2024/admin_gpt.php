@@ -9,20 +9,7 @@ public static function  getAdminHtml() {
 echo admin_gpt::checkLogin();
 
 if (isset($_GET["active_workshop"])) {
-  $optionen = gpt_functions::getOptionen();
-
-  $optionen->active_workshop = $_GET["active_workshop"];
-
-  template_prompt::resetLastTimeUsed();
-
-  gpt_functions::setOptionen($optionen);
-
-  send_prompts::setPrompt("", "1");
-
-  if ($_GET["active_workshop"] == "-1") {
-    gpt_functions::sendWsPost("gpt2024p", ["a"=>"stop"]);
-  }
-
+  workshops::activate($_GET["active_workshop"]);
 }
 
 if (isset($_GET["next_prompt_template"])) {
@@ -38,33 +25,36 @@ $optionen = gpt_functions::getOptionen();
 
 if (isset($_GET["template"])) {
 
-  if (isset($_GET["lang"]) && $_GET["lang"] == "de") {
-    $optionen->lang = "de";
+  // Prompts eines Workshop-Templates bearbeiten
+  if (isset($_GET["wt"])) {
+    $theTemplate = new workshop_templates($_GET["wt"]);
+    echo "<h1>Workshop-Template WT{$theTemplate->workshop_template_id}: {$theTemplate->name} ({$theTemplate->lang})</h1>
+    <p><a href='?template=1'>&larr; alle Templates</a>
+    <a class='btn btn-outline-dark btn-sm' href='/api_gpt?class=workshop_templates&exportJson={$theTemplate->workshop_template_id}'>JSON herunterladen</a></p>";
+    echo template_prompt::getEditList($theTemplate->workshop_template_id, 0);
+    return;
   }
-  if (isset($_GET["lang"]) && $_GET["lang"] == "en") {
-    $optionen->lang = "en";
-  }
-  gpt_functions::setOptionen($optionen);
 
-
-  echo "Select Language: Aktuell: <b>" . $optionen->lang . "</b>
-  <a href='?template=1&lang=de' class=\"btn btn-dark\">Deutsch</a>
-  <a href='?template=1&lang=en' class=\"btn btn-dark\">English</a>
-  
-  
-  <br> ";
-  
-
-  echo template_prompt::getEditInterface(null);
-
-  $all_templates = template_prompt::getAllPrompts(true);
-  foreach ($all_templates as $template) {
-    echo $template->getDetails();
+  echo "<h1>Workshop-Templates</h1>
+  <p>Template &rarr; Workshop ableiten (oder JSON herunterladen, lokal bearbeiten, unter Workshops als neuen Workshop hochladen) &rarr; Workshop aktiv setzen.</p>";
+  echo workshop_templates::getEditInterface(null);
+  foreach (workshop_templates::getAll() as $theTemplate) {
+    echo $theTemplate->getDetails();
   }
 
   return;
 }
 if (isset($_GET["workshops"])) {
+
+  // Prompts eines konkreten Workshops bearbeiten
+  if (isset($_GET["w"])) {
+    $theWorkshop = new workshops($_GET["w"]);
+    echo "<h1>Workshop W{$theWorkshop->workshops_id}: {$theWorkshop->workshop_name} ({$theWorkshop->lang})</h1>
+    <p><a href='?workshops=1'>&larr; alle Workshops</a>
+    <a class='btn btn-outline-dark btn-sm' href='/api_gpt?class=workshops&exportJson={$theWorkshop->workshops_id}'>JSON herunterladen</a></p>";
+    echo template_prompt::getEditList(0, $theWorkshop->workshops_id);
+    return;
+  }
 
   echo workshops::getEditInterface(null);
 
@@ -99,8 +89,11 @@ echo "<script>
 startNchanAdmin(2);
 </script>";
 
-echo "<h2>Template</h2>";
-$allItems = template_prompt::getAllPrompts(false);
+echo "<h2>Prompts von Workshop W{$optionen->active_workshop}</h2>";
+$allItems = template_prompt::getAllPrompts(false, 0, $optionen->active_workshop);
+if (count($allItems) == 0) {
+  echo "<p class='text-muted'>Der aktive Workshop hat keine Prompts. Unter <a href='/admin_gpt/?template=1'>Template</a> einen Workshop ableiten oder unter <a href='/admin_gpt/?workshops=1'>Workshops</a> ein JSON hochladen.</p>";
+}
 $list = "<div id='template_prompt-list'>";
 foreach ($allItems as $item) {
   $list .= $item->getSimple();

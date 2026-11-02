@@ -84,7 +84,8 @@ class send_prompts {
     if ($template->prompt != $this->prompt) {
       return;
     }
-    $this->chatgpt_json = $template->chatgpt_json;
+    // KI-Vorgaben (falls gesetzt) statt echter GPT-Antwort
+    $this->chatgpt_json = $template->getEffectiveGptJson();
     $this->html_code = $template->html_code;
     $template->updateLastTimeUsed();
 
@@ -159,6 +160,11 @@ class send_prompts {
     $stmt = $db->prepare("SELECT prompt_id FROM send_prompts ORDER BY prompt_id DESC LIMIT 1");
     $stmt->execute();
     $data = $stmt->fetch();
+    if (empty($data)) {
+      // frische Datenbank: leeren Start-Prompt anlegen
+      $prompt_id = self::insertToDb();
+      return new self($prompt_id);
+    }
     return new self($data['prompt_id']);
   }
 

@@ -24,32 +24,75 @@ public static function sendWsPost ($channel, $msgArray) {
   return file_get_contents($url, false, $context);
 }
 
-static function getOptionen () {
-  try {
-    $a = json_decode(file_get_contents(__DIR__ . "/../../optionen.json"));
+const OPTIONEN_FILE = __DIR__ . "/../../optionen.json";
+const CHART_CONFIG_FILE = __DIR__ . "/../../chart-config.json";
 
-  } catch (\Exception $th) {
-    //throw $th;
+/**
+ * Standardwerte fuer optionen.json (nicht im Git, wird bei Bedarf angelegt).
+ * active_workshop -1 = Chatbot pausiert; p/h/c/prompt_id = aktueller Prompt, HTML, Chart-Flag.
+ */
+static function getOptionenDefaults () {
+  return (object) [
+    "active_workshop" => -1,
+    "lang" => "de",
+    "p" => "",
+    "h" => "",
+    "c" => 0,
+    "prompt_id" => 0,
+  ];
+}
+
+/**
+ * Liest optionen.json. Fehlt die Datei oder ist sie kaputt, wird sie mit Standardwerten angelegt;
+ * fehlende Schluessel werden ergaenzt.
+ */
+static function getOptionen () {
+  $a = null;
+  if (is_file(self::OPTIONEN_FILE)) {
+    $a = json_decode(file_get_contents(self::OPTIONEN_FILE));
+  }
+
+  $defaults = self::getOptionenDefaults();
+  if (!is_object($a)) {
+    $a = $defaults;
+    self::setOptionen($a);
+    return $a;
+  }
+
+  $ergaenzt = false;
+  foreach ($defaults as $key => $value) {
+    if (!property_exists($a, $key)) {
+      $a->$key = $value;
+      $ergaenzt = true;
+    }
+  }
+  if ($ergaenzt) {
+    self::setOptionen($a);
   }
   return $a;
 }
 
 static function setOptionen ($jsonObj) {
-  try {
-    $jstext = json_encode($jsonObj);
-    file_put_contents(__DIR__ . "/../../optionen.json", $jstext);
-  } catch (\Exception $th) {
-    //throw $th;
+  $jstext = json_encode($jsonObj, JSON_UNESCAPED_UNICODE);
+  if (file_put_contents(self::OPTIONEN_FILE, $jstext, LOCK_EX) === false) {
+    error_log("CollectiveGPT: optionen.json nicht schreibbar (" . self::OPTIONEN_FILE . ")");
+    return 0;
   }
   return 1;
 }
 
+/**
+ * Liest chart-config.json (zuletzt an die Teilnehmenden gesendetes Diagramm).
+ * Fehlt die Datei, wird eine leere Konfiguration angelegt.
+ */
 static function getChartConfig () {
-  try {
-    $a = json_decode(file_get_contents(__DIR__ . "/../../chart-config.json"));
-
-  } catch (\Exception $th) {
-    //throw $th;
+  $a = null;
+  if (is_file(self::CHART_CONFIG_FILE)) {
+    $a = json_decode(file_get_contents(self::CHART_CONFIG_FILE));
+  }
+  if (!is_object($a)) {
+    $a = new \stdClass();
+    self::setChartConfig($a);
   }
   return $a;
 }
@@ -57,8 +100,7 @@ static function getChartConfig () {
 static function setChartConfig ($jsonObj) {
   try {
     $jstext = json_encode($jsonObj);
-    var_dump($jstext);
-    file_put_contents(__DIR__ . "/../../chart-config.json", $jstext);
+    file_put_contents(self::CHART_CONFIG_FILE, $jstext, LOCK_EX);
   } catch (\Exception $th) {
     //throw $th;
   }

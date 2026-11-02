@@ -1,6 +1,6 @@
 // Ohne IIFE-Wrapper, damit die Funktionen (loadGptAnswer, startNchanAdmin, parseAnswersList, ...)
 // global sind und von den Inline-Handlern in admin_gpt.php aufgerufen werden koennen.
-var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, loadGptAnswer, parseAnswersList, parseUsernamesList, processGptData, removeFromAnswerList, selectTemplate, sendGraphToUsers, sortUserAnswerList, startNchanAdmin, userAnswerChartData, usernamesList;
+var answersList, fillNextWord, kiVorgabenAusGpt, generateChart, globalChartConfig, gptChartData, loadGptAnswer, parseAnswersList, parseUsernamesList, processGptData, removeFromAnswerList, selectTemplate, sendGraphToUsers, sortUserAnswerList, startNchanAdmin, userAnswerChartData, usernamesList;
 
   usernamesList = [];
 
@@ -56,7 +56,8 @@ var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, l
       }
       
       // Begrenze extreme negative p-Werte und wende Sigmoid-Funktion an
-      adjustedP = sigmoid(item.p);
+      // (KI-Vorgaben: p ist schon ein Gewicht, z. B. 0.8)
+      adjustedP = gptData.manual ? item.p : sigmoid(item.p);
       responseCount[item.r] += 1;
       pValueSum[item.r] += adjustedP;
     }
@@ -72,7 +73,11 @@ var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, l
         words = item.r.split(" ");
         first_word = `<span class='badge bg-dark' onclick='fillNextWord("${words[0]}")' class='btn btn-sm'>${words[0]}</span>`;
         rest_of_sentence = words.slice(1).join(" ");
-        gptDiv.append(`<div>${first_word} ${rest_of_sentence} @ ${item.p} ${responseCount[item.r]}x</div>`);
+        if (gptData.manual) {
+          gptDiv.append(`<div>${first_word} ${rest_of_sentence} @ ${item.p} <span class='badge bg-warning'>KI-Vorgabe</span></div>`);
+        } else {
+          gptDiv.append(`<div>${first_word} ${rest_of_sentence} @ ${item.p} ${responseCount[item.r]}x</div>`);
+        }
       }
     }
     gptDiv.append("<div id='gpt-graph'></div>");
@@ -80,7 +85,7 @@ var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, l
     combinedScores = {};
     for (r in responseCount) {
       count = responseCount[r];
-      combinedScores[r] = count + pValueSum[r];
+      combinedScores[r] = gptData.manual ? pValueSum[r] : count + pValueSum[r];
     }
     labels = Object.keys(responseCount);
     counts = Object.values(responseCount);
@@ -382,6 +387,30 @@ var answersList, fillNextWord, generateChart, globalChartConfig, gptChartData, l
     myChart = new Chart(ctx, globalChartConfig);
     $(".btnSendGraphToUsers").addClass("btn-warning");
     return $(".btnSendGraphToUsers").removeClass("btn-secondary");
+  };
+
+  // Fuellt das KI-Vorgaben-Feld aus einer echten GPT-Antwort (Anteil je Antwort), zum Nachbearbeiten
+  kiVorgabenAusGpt = function(gptData, target) {
+    var count, counts, i, lines, r, total;
+    counts = {};
+    total = 0;
+    for (i = 1; gptData[`r${i}`] != null; i++) {
+      r = gptData[`r${i}`].trim();
+      if (counts[r] == null) {
+        counts[r] = 0;
+      }
+      counts[r] += 1;
+      total++;
+    }
+    lines = (function() {
+      var results = [];
+      for (r in counts) {
+        count = counts[r];
+        results.push(`${r}, ${Math.round(count / total * 100) / 100}`);
+      }
+      return results;
+    })();
+    return $(target).val(lines.join("\n"));
   };
 
   fillNextWord = function(nextWord) {

@@ -40,7 +40,8 @@ processGptData = (gptData, prompt_id, template_id) ->
     pValueSum[item.r] ?= 0
     
     # Begrenze extreme negative p-Werte und wende Sigmoid-Funktion an
-    adjustedP = sigmoid(item.p)
+    # (KI-Vorgaben: p ist schon ein Gewicht, z. B. 0.8)
+    adjustedP = if gptData.manual then item.p else sigmoid(item.p)
     
     responseCount[item.r] += 1
     pValueSum[item.r] += adjustedP
@@ -57,7 +58,10 @@ processGptData = (gptData, prompt_id, template_id) ->
       words = item.r.split(" ")
       first_word = "<span class='badge bg-dark' onclick='fillNextWord(\"#{words[0]}\")' class='btn btn-sm'>#{words[0]}</span>"
       rest_of_sentence = words[1..].join(" ")
-      gptDiv.append "<div>#{first_word} #{rest_of_sentence} @ #{item.p} #{responseCount[item.r]}x</div>"
+      if gptData.manual
+        gptDiv.append "<div>#{first_word} #{rest_of_sentence} @ #{item.p} <span class='badge bg-warning'>KI-Vorgabe</span></div>"
+      else
+        gptDiv.append "<div>#{first_word} #{rest_of_sentence} @ #{item.p} #{responseCount[item.r]}x</div>"
   
   
   gptDiv.append "<div id='gpt-graph'></div>"
@@ -65,7 +69,7 @@ processGptData = (gptData, prompt_id, template_id) ->
 
   combinedScores = {}
   for r, count of responseCount
-    combinedScores[r] = count + pValueSum[r]
+    combinedScores[r] = if gptData.manual then pValueSum[r] else count + pValueSum[r]
     
   labels = Object.keys(responseCount)
   counts = Object.values(responseCount)
@@ -293,6 +297,21 @@ generateChart = (generationType) ->
 
   $(".btnSendGraphToUsers").addClass "btn-warning"
   $(".btnSendGraphToUsers").removeClass "btn-secondary"
+
+# Fuellt das KI-Vorgaben-Feld aus einer echten GPT-Antwort (Anteil je Antwort), zum Nachbearbeiten
+kiVorgabenAusGpt = (gptData, target) ->
+  counts = {}
+  total = 0
+  i = 1
+  while gptData["r#{i}"]?
+    r = gptData["r#{i}"].trim()
+    counts[r] ?= 0
+    counts[r] += 1
+    total++
+    i++
+  lines = for r, count of counts
+    "#{r}, #{Math.round(count / total * 100) / 100}"
+  $(target).val lines.join("\n")
 
 fillNextWord = (nextWord) ->
   $("#input-nextword").val (nextWord)
